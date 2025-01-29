@@ -1,2 +1,4 @@
 .venv
 *.png
+
+RealESRGAN_x4plus.pth
