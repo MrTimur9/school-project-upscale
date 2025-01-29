@@ -1,6 +1,7 @@
 # This is project about image upscaling 
 
 ### Instalation
+-1. 0
 
 0. Clone repository
 
