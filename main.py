@@ -4,6 +4,7 @@ from PIL import Image
 from basicsr.archs.rrdbnet_arch import RRDBNet # model itself
 from realesrgan import RealESRGANer # framework that used it
 
+
 model_path = 'RealESRGAN_x4plus.pth'
 
 state_dict = torch.load(model_path, map_location=torch.device('cpu'))['params_ema']
@@ -27,7 +28,16 @@ upsampler = RealESRGANer(
     half=False
 )
 
-input_img = Image.open('img/jackal1.png').convert('RGB')
+while True:
+    picture_path = input('Path of the picture that you want to upscale : ')
+
+    try:
+        input_img = Image.open(picture_path).convert('RGB')
+        break
+    except FileNotFoundError as error:
+
+        print('', error)
+
 img = np.array(input_img)
 
 output, _ = upsampler.enhance(img, outscale=4)
