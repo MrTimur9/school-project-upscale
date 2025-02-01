@@ -18,7 +18,7 @@ model = RRDBNet(
     )
 model.load_state_dict(state_dict, strict=True)
 
-upsampler = RealESRGA(
+upsampler = RealESRGANer(
     scale=4,
     model_path=model_path,
     model=model,
