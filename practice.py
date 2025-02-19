@@ -15,16 +15,22 @@ omg_slovar = {'input_file' : None, 'output_file' : None}
 root = tk.Tk()  # Creates the main window (the “root” widget)
 root.title("Пон")  # Sets the window title
 
-text_entry = tk.Entry(root, width=40)
-text_entry.pack(pady=5)
-
 status_label = tk.Label(root, width=40, text='Status')
 status_label.pack(pady=5)
 
-def on_button_click() -> None:
-    user_text = text_entry.get()
-    print(user_text)
-    button.config(text=user_text)
+def loading_fr(omg_thread : threading.Thread) -> None:
+    omg_text = 'Loading'
+
+    while omg_thread.is_alive():
+        if omg_text.count('.') < 3:
+            omg_text += ' . '
+        else:
+            omg_text = 'Loading'
+        status_label.config(text=omg_text)
+        sleep(0.5)
+    status_label.config(text='Done')
+    sleep(2)
+    status_label.config(text='Status')
 
 def choose_input_file():
     omg_slovar['input_file'] = filedialog.askopenfilename(
@@ -43,7 +49,10 @@ def choose_output_file():
     print(omg_slovar['output_file'])
 
 def upscale_process():
-    status_label.config(text='Loading fr')
+
+    button_start.config(state=tk.DISABLED)
+    button.config(state=tk.DISABLED)
+    button1.config(state=tk.DISABLED)
 
     model_path = 'RealESRGAN_x4plus.pth'
 
@@ -81,12 +90,21 @@ def upscale_process():
     output_img = Image.fromarray(output)
     output_img.save(omg_slovar['output_file'])
 
-    status_label.config(text='Done')
+    sleep(1.5)
+
+    button_start.config(state=tk.NORMAL)
+    button.config(state=tk.NORMAL)
+    button1.config(state=tk.NORMAL)
 
 def start():
 
     
-    threading.Thread(target=upscale_process).start()
+    thread_upscale = threading.Thread(target=upscale_process)
+    thread_load = threading.Thread(target=loading_fr, args=(thread_upscale,))
+    thread_upscale.start()
+    thread_load.start()
+
+
 
 button_start = tk.Button(
     root,
